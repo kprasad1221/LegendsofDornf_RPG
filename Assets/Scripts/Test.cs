@@ -4,15 +4,26 @@ using UnityEngine;
 
 public class Test : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+
+    [SerializeField] int pieceCount;
+    [SerializeField] Vector3 centerPos;
+    [SerializeField] float radius;
+    [SerializeField] GameObject prefab;
+
+    private void Start() {
+        InstantiateCircle();
     }
 
-    // Update is called once per frame
-    void Update()
+    void InstantiateCircle()
     {
-        
+        float angle = 360f / (float)pieceCount;
+        for(int i = 0; i< pieceCount; i++)
+        {
+            Quaternion rotation = Quaternion.AngleAxis(i * angle, Vector3.up);
+            Vector3 direction = rotation * Vector3.forward;
+
+            Vector3 position = centerPos + (direction * radius);
+            Instantiate(prefab,position, rotation);
+        }
     }
 }
