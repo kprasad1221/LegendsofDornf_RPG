@@ -1,32 +1,53 @@
-﻿using System;
+﻿using RPG.Combat;
+using RPG.Core;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class mover : MonoBehaviour
+namespace RPG.Movement
 {
-
-    [SerializeField] Transform target;
-    Ray ray;
- 
-
-    // Update is called once per frame
-    void Update()
+    public class mover : MonoBehaviour, IAction
     {
-          UpdateAnimator();
-    }
 
-    public void MoveTo(Vector3 destination)
-    {
-        GetComponent<NavMeshAgent>().destination = destination;
-    }
+        [SerializeField] Transform target;
+        Ray ray;
+        NavMeshAgent navMeshAgent;
 
-    private void UpdateAnimator()
-    {
-        Vector3 velocity = GetComponent<NavMeshAgent>().velocity;
-        Vector3 localVelocity = transform.InverseTransformDirection(velocity);
-        float speed = localVelocity.z;
-        GetComponent<Animator>().SetFloat("forwardSpeed", speed);
+
+        private void Start()
+        {
+            navMeshAgent = GetComponent<NavMeshAgent>();
+        }
+        void Update()
+        {
+            UpdateAnimator();
+        }
+
+        public void StartMoveAction(Vector3 destination)
+        {
+            GetComponent<ActionScheduler>().StartAction(this);
+            MoveTo(destination);
+        }
+
+        public void MoveTo(Vector3 destination)
+        {
+            navMeshAgent.isStopped = false;
+            navMeshAgent.destination = destination;
+        }
+
+        public void Cancel()
+        {
+            navMeshAgent.isStopped = true;
+        }
+
+        private void UpdateAnimator()
+        {
+            Vector3 velocity = navMeshAgent.velocity;
+            Vector3 localVelocity = transform.InverseTransformDirection(velocity);
+            float speed = localVelocity.z;
+            GetComponent<Animator>().SetFloat("forwardSpeed", speed);
+        }
     }
 }
