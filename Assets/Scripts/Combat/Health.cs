@@ -8,6 +8,7 @@ namespace RPG.Combat
     public class Health : MonoBehaviour
     {
         [SerializeField] float healthPoints = 30f;
+        bool isDead = false;
 
         public void TakeDamage(float damage)
         {
@@ -21,7 +22,9 @@ namespace RPG.Combat
 
         private void ProcessDeath()
         {
-            GetComponent<Animator>().SetTrigger("death");
+            if(isDead) { return; }
+            isDead = true;
+            GetComponent<Animator>().SetTrigger("dead");
         }
     }
 }
